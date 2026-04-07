@@ -7,12 +7,10 @@ export default function PantallaInicial({
 }) {
   return (
     <View>
-      <Text style={styles.titulo}>
-        No te quedes en silencio...
-      </Text>
+      <Text style={styles.titulo}>No te quedes en silencio...</Text>
 
       <TextInput
-        style={styles.input}
+        style={styles.entradaTexto}
         placeholder="Escribí lo que sentís..."
         placeholderTextColor="#aaa"
         value={mensajeUsuario}
@@ -20,7 +18,7 @@ export default function PantallaInicial({
       />
 
       <Pressable style={styles.boton} onPress={manejarGrito}>
-        <Text style={styles.textoBoton}>GRITAR</Text>
+        <Text style={styles.textoBoton}>COMENZAR</Text>
       </Pressable>
     </View>
   );
@@ -33,7 +31,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 100,
   },
-  input: {
+  entradaTexto: {
     backgroundColor: "#222",
     color: "white",
     margin: 20,

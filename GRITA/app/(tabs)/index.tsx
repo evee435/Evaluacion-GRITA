@@ -1,38 +1,38 @@
 import ContenedorPrincipal from "@/components/contenedores/contenedorPrincipal";
-import PantallaCaos from "@/components/contenido/pantallaCaos";
 import PantallaInicial from "@/components/contenido/pantallaInicial";
+import PantallaResultado from "@/components/contenido/pantallaResultado";
 import { useGritoControlador } from "@/hooks/useGritaControlador";
 
 export default function App() {
   const {
-    mensajeUsuario,
-    setMensajeUsuario,
-    nivelCaos,
-    manejarGrito,
-    generarElementosCaos,
-    explosion,
+    tipo,
+    frase,
+    iniciarEscucha,
+    escuchando,
+    reiniciar,
   } = useGritoControlador();
 
-  // Fondo cambia según caos; más alto el caos → color más intenso
   const colorFondo =
-    nivelCaos === 0
+    tipo === "suave"
       ? "#111"
-      : `hsl(${Math.random() * 360}, 50%, 10%)`;
+      : tipo === "medio"
+      ? "#332200"
+      : tipo === "fuerte"
+      ? "#330000"
+      : "#111";
 
   return (
     <ContenedorPrincipal colorFondo={colorFondo}>
-      {nivelCaos === 0 || explosion ? (
+      {!tipo ? (
         <PantallaInicial
-          mensajeUsuario={mensajeUsuario}
-          setMensajeUsuario={setMensajeUsuario}
-          manejarGrito={manejarGrito}
+          iniciarEscucha={iniciarEscucha}
+          escuchando={escuchando}
         />
       ) : (
-        <PantallaCaos
-          elementosCaos={generarElementosCaos()}
-          manejarGrito={manejarGrito}
-          nivelCaos={nivelCaos}
-          explosion={explosion}
+        <PantallaResultado
+          tipo={tipo}
+          frase={frase}
+          reiniciar={reiniciar}
         />
       )}
     </ContenedorPrincipal>

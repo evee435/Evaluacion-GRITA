@@ -1,57 +1,59 @@
 import { useState } from "react";
-import { Dimensions } from "react-native";
-
-const { width: anchoPantalla, height: altoPantalla } = Dimensions.get("window");
+import { Audio } from "expo-av";
 
 export const useGritoControlador = () => {
-  const [mensajeUsuario, setMensajeUsuario] = useState("");
-  const [nivelCaos, setNivelCaos] = useState(0);
-  const [explosion, setExplosion] = useState(false);
+  const [tipo, setTipo] = useState(null);
+  const [frase, setFrase] = useState("");
+  const [escuchando, setEscuchando] = useState(false);
 
-  const manejarGrito = () => {
-    if (nivelCaos >= 20) {
-      setExplosion(true);
-      setTimeout(() => {
-        setNivelCaos(0);
-        setExplosion(false);
-      }, 1000);
-    } else {
-      setNivelCaos((nivelActual) => nivelActual + 1);
-    }
+  const iniciarEscucha = async () => {
+    const permiso = await Audio.requestPermissionsAsync();
+    if (!permiso.granted) return;
+
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+    });
+
+    const recording = new Audio.Recording();
+
+    await recording.prepareToRecordAsync({
+      ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
+      isMeteringEnabled: true,
+    });
+
+    await recording.startAsync();
+    setEscuchando(true);
+
+    setTimeout(async () => {
+      const status = await recording.getStatusAsync();
+      await recording.stopAndUnloadAsync();
+      setEscuchando(false);
+
+const volumen = status.metering ?? -160;
+      if (volumen > -20) {
+        setTipo("fuerte");
+        setFrase("TU DESTINO NO ES CALLAR LO QUE SENTÍS");
+      } else if (volumen > -50){
+        setTipo("medio");
+        setFrase("No es el momento… es vos evitando el momento");
+      } else {
+        setTipo("suave");
+        setFrase("No todo destino está escrito… algunas cosas dependen de lo que te animás a sentir");
+      }
+    }, 4000);
   };
 
-  const generarElementosCaos = () => {
-    const cantidadElementos = nivelCaos * 5;
-    const elementos = [];
-
-    for (let i = 0; i < cantidadElementos; i++) {
-      let color;
-      if (nivelCaos < 5) color = "#00f"; // Tranquilo
-      else if (nivelCaos < 10) color = "#ff0"; // Presión
-      else if (nivelCaos < 15) color = "#f80"; // Ansiedad
-      else color = "#f00"; // Enojo
-
-      elementos.push({
-        id: i,
-        texto: (mensajeUsuario || "GRITA").toUpperCase(),
-        top: Math.random() * altoPantalla,
-        left: Math.random() * anchoPantalla,
-        tamaño: 20 + Math.random() * nivelCaos * 5,
-        color,
-        rotacion: `${Math.random() * 360}deg`,
-        escala: 1 + Math.random() * nivelCaos * 0.1,
-      });
-    }
-
-    return elementos;
+  const reiniciar = () => {
+    setTipo(null);
+    setFrase("");
   };
 
   return {
-    mensajeUsuario,
-    setMensajeUsuario,
-    nivelCaos,
-    manejarGrito,
-    generarElementosCaos,
-    explosion,
+    tipo,
+    frase,
+    iniciarEscucha,
+    escuchando,
+    reiniciar,
   };
 };

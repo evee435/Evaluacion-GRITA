@@ -6,7 +6,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { useEffect } from "react";
 
-export default function PantallaInicial({ iniciarEscucha, escuchando }) {
+type Props = {
+  iniciarEscucha: () => void;
+  escuchando: boolean;
+};
+
+export default function PantallaInicial({ iniciarEscucha, escuchando }: Props) {
   const opacity = useSharedValue(0);
 
   useEffect(() => {

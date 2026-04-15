@@ -7,8 +7,13 @@ import Animated, {
 } from "react-native-reanimated";
 import { useEffect } from "react";
 
-export default function PantallaResultado({ tipo, frase, reiniciar }) {
-  const anim = useSharedValue(0);
+type Props = {
+  tipo: string | null;
+  frase: string;
+  reiniciar: () => void;
+};
+
+export default function PantallaResultado({ tipo, frase, reiniciar }: Props) {  const anim = useSharedValue(0);
 
   useEffect(() => {
     if (tipo === "suave") {

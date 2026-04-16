@@ -19,11 +19,11 @@ export default function PantallaResultado({ tipo, frase, reiniciar }: Props) {  
     if (tipo === "suave") {
       anim.value = withTiming(1, { duration: 2000 });
     } else if (tipo === "medio") {
-      anim.value = withRepeat(withTiming(0, { duration: 300 }), -1, true);
+      anim.value = withRepeat(withTiming(1, { duration: 300 }), -1, true);
     } else {
       anim.value = withRepeat(withTiming(10, { duration: 50 }), -1, true);
     }
-  }, []);
+  }, [tipo]);
 
   const estilo = useAnimatedStyle(() => {
     if (tipo === "fuerte") {
